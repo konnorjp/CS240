@@ -38,7 +38,7 @@ public class SpellCorrector implements ISpellCorrector {
 		}
 	}
 
-	private ArrayList<String> getWordsDeletionDist(String word) {
+	public ArrayList<String> getWordsDeletionDist(String word) {
 		char[] chars = word.toCharArray();
 		ArrayList<String> words = new ArrayList<String>(0);
 
@@ -52,7 +52,7 @@ public class SpellCorrector implements ISpellCorrector {
 		return words;
 	}
 
-	private ArrayList<String> getWordsTranspositionDist(String word) {
+	public ArrayList<String> getWordsTranspositionDist(String word) {
 		char[] chars = word.toCharArray();
 		ArrayList<String> words = new ArrayList<String>(0);
 
@@ -69,7 +69,7 @@ public class SpellCorrector implements ISpellCorrector {
 		return words;
 	}
 
-	private ArrayList<String> getWordsAlterationDist(String word) {
+	public ArrayList<String> getWordsAlterationDist(String word) {
 		char[] chars = word.toCharArray();
 		ArrayList<String> words = new ArrayList<String>(0);
 		char[] alphaChars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
@@ -85,7 +85,7 @@ public class SpellCorrector implements ISpellCorrector {
 		return words;
 	}
 
-	private ArrayList<String> getWordsInsertionDist(String word) {
+	public ArrayList<String> getWordsInsertionDist(String word) {
 		char[] chars = word.toCharArray();
 		ArrayList<String> words = new ArrayList<String>(0);
 		char[] alphaChars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
@@ -181,7 +181,7 @@ public class SpellCorrector implements ISpellCorrector {
 			if(freqWords.size() == 1) return freqWords.get(0);
 			return freqWords.stream().sorted().findFirst().orElse(null);
 		}
-		return suggestSimilarWord2Dist(allWords);
+		return suggestSimilarWord2Dist(allCombine);
 	}
 
 	public String trieToString() {

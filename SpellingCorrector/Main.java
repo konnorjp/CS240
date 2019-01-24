@@ -34,10 +34,11 @@ public class Main {
 
 		System.out.println("Suggestion is: " + suggestion);
 
-		ArrayList<String> words;
+		ArrayList<String> words = new ArrayList<String>(0);
 		words = corrector.getWordsInsertionDist(inputWord);
-		for (String word: words) {
-			System.out.println(word);
+		ArrayList<String> newWords = new ArrayList<String>(0);
+		for (String stringthing: words) {
+			newWords.addAll(corrector.getWordsInsertionDist(stringthing));
 		}
 	}
 
