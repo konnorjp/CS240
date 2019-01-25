@@ -6,30 +6,66 @@ package hangman;
 public class PlayHangman {
     private EvilHangmanGame game = null;
     Set<char> guesses = new Set<char>();
+    Set<String> possibleWords = new Set<String>();
 
     public void guess(int numGuesses) {
-        System.out.println("You have " + numGuesses + " left");
+        if(numGuesses < 1) {
+            System.out.println("You lose!")
+            System.out.println("The word was " + game.getRandomWord());
+        }
+        System.out.println("\nYou have " + numGuesses + " left");
         System.out.print("Used letters:");
         for (char guess : guesses) {
             System.out.print(" " + guess);
         }
         System.out.print("\nWord: ");
+        System.out.println(game.getCurrentWord());
 
-        //Print word
-
-        bool goodGuess = false;
+        boolean goodGuess = false;
         while(!goodGuess) {
             System.out.print("\nEnter guess: ");
-            //Read in input
+            import java.util.Scanner;
+            Scanner scan = new Scanner(System.in);
+            String guess = scan.next();
+            if(guess.size() > 1) {
+                System.out.println("Invalid input");
+                continue;
+            }
+            scan.close();
+
+            char[] chars = guess.toCharArray();
+            boolean notAlphabetic = false;
+            for (char c : chars) {
+                if(!Character.isLetter(c)) {
+                    notAlphabetic = true;
+                }
+            }
+            if(notAlphabetic) {
+                System.out.println("Invalid input");
+                continue;
+            }
+
             guess = guess.toLowerCase();
-            if(set.add(guess)) {
+            try {
+                possibleWords = game.makeGuess(guess.charAt(0));
                 goodGuess = true;
             }
-            else {
-                System.out.println("You already used that letter");
+            catch (GuessAlreadyMadeException e) {
+                System.out.println(e)
+            }
+            String currentWord = game.getCurrentWord();
+            if(!currentWord.contains('_')) {
+                System.out.println("You win!");
+                return;
             }
         }
-        guess(numGuesses - 1);
+        if(goodGuess) {
+            guess(numGuesses);
+        }
+        else {
+            guess(numGuesses - 1);
+        }
+
     }
 
     public void playGame(String dictionaryFileName, int wordLength, int numGuesses) {
