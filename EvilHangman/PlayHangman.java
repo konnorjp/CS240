@@ -1,16 +1,22 @@
-package hangman;
+
+import java.util.Scanner;
+import java.util.TreeSet;
+import java.util.Set;
+import java.io.File;
+import hangman.EvilHangmanGame;
+import hangman.EvilHangmanGame.GuessAlreadyMadeException;
 
 /**
  * A simple main class for running the Evil Hangman Game.
  */
 public class PlayHangman {
     private EvilHangmanGame game = null;
-    Set<char> guesses = new Set<char>();
-    Set<String> possibleWords = new Set<String>();
+    Set<Character> guesses = new TreeSet<Character>();
+    Set<String> possibleWords = new TreeSet<String>();
 
     public void guess(int numGuesses) {
         if(numGuesses < 1) {
-            System.out.println("You lose!")
+            System.out.println("You lose!");
             System.out.println("The word was " + game.getRandomWord());
         }
         System.out.println("\nYou have " + numGuesses + " left");
@@ -24,10 +30,9 @@ public class PlayHangman {
         boolean goodGuess = false;
         while(!goodGuess) {
             System.out.print("\nEnter guess: ");
-            import java.util.Scanner;
             Scanner scan = new Scanner(System.in);
             String guess = scan.next();
-            if(guess.size() > 1) {
+            if(guess.length() > 1) {
                 System.out.println("Invalid input");
                 continue;
             }
@@ -49,12 +54,11 @@ public class PlayHangman {
             try {
                 possibleWords = game.makeGuess(guess.charAt(0));
                 goodGuess = true;
-            }
-            catch (GuessAlreadyMadeException e) {
-                System.out.println(e)
+            } catch (EvilHangmanGame.GuessAlreadyMadeException e) {
+                System.out.println(e);
             }
             String currentWord = game.getCurrentWord();
-            if(!currentWord.contains('_')) {
+            if(!currentWord.contains("_")) {
                 System.out.println("You win!");
                 return;
             }
@@ -70,7 +74,8 @@ public class PlayHangman {
 
     public void playGame(String dictionaryFileName, int wordLength, int numGuesses) {
         game = new EvilHangmanGame();
-		game.startGame(dictionaryFileName, wordLength);
+        File file = new File(dictionaryFileName);
+		game.startGame(file, wordLength);
         guess(numGuesses);
     }
 

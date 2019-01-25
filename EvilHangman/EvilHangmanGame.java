@@ -1,11 +1,16 @@
 package hangman;
 
 import java.io.File;
+import java.util.TreeSet;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.io.IOException;
 
 public class EvilHangmanGame implements IEvilHangmanGame {
-    Set<String> dictionary = new Set<String>();
-    Set<char> guessesMade = new Set<char>();
+    TreeSet<String> dictionary = new TreeSet<String>();
+    TreeSet<Character> guessesMade = new TreeSet<Character>();
     String currentWord = null;
     int lengthOfWord = 0;
 
@@ -16,11 +21,11 @@ public class EvilHangmanGame implements IEvilHangmanGame {
     }
 
     public String getRandomWord() {
-        return dictionary.toArray()[0];
+        return dictionary.first();
     }
 
 	@SuppressWarnings("serial")
-	public static class GuessAlreadyMadeException extends Exception {
+	public static class GuessAlreadyMadeException extends RuntimeException {
         public GuessAlreadyMadeException(String errorMessage) {
             super(errorMessage);
         }
@@ -37,20 +42,19 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 	 * @param dictionary Dictionary of words to use for the game
 	 * @param wordLength Number of characters in the word to guess
 	 */
-	public void startGame(File dictionary, int wordLength) {
+	public void startGame(File dictionaryFile, int wordLength) {
         // Reset entire game, reinitialize everything
-        dictionary = new Set<String>();
+        dictionary = new TreeSet<String>();
         lengthOfWord = wordLength;
-        char[] curWord = new char[];
+        char[] curWord = new char[lengthOfWord];
         for(int i = 0; i < lengthOfWord; i++) {
-            curWord.append('_');
+            curWord[i] = '_';
         }
         currentWord = String.valueOf(curWord);
         Scanner scanner = null;
 
 		try {
-			File file = new File(dictionaryFileName);
-			scanner = new Scanner(file);
+			scanner = new Scanner(dictionaryFile);
 
 			while(scanner.hasNext()) {
 				String word = scanner.next();
@@ -68,8 +72,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
     }
 
-    private String findRightmostGuessedLetter(char guess, Set<String> fewLettersKeys, int index) {
-        Set<String> rightmostKeys = new Set<String>();
+    private String findRightmostGuessedLetter(char guess, TreeSet<String> fewLettersKeys, int index) {
+        TreeSet<String> rightmostKeys = new TreeSet<String>();
         for(String key: fewLettersKeys) {
             char[] word = key.toCharArray();
             int rightIndexWord = 0;
@@ -78,9 +82,9 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             }
         }
         if(rightmostKeys.size() == 1) {
-            return rightmostKeys.toArray()[0];
+            return rightmostKeys.first();
         }
-        else if(rightmostKeys.size() > 1 {
+        else if(rightmostKeys.size() > 1) {
             return findRightmostGuessedLetter(guess, rightmostKeys, index - 1);
         }
         else {
@@ -88,27 +92,29 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         }
     }
 
-    private Set<String> findFewestGuessedLetter(char guess, Map<String,Set<String>> maxSets) {
-        char[] noGuess = new char[];
+    private TreeSet<String> findFewestGuessedLetter(char guess, TreeMap<String,TreeSet<String>> maxSets) {
+        char[] noGuess = new char[lengthOfWord];
         for(int i = 0; i < lengthOfWord; i++) {
-            noGuess.append('_');
+            noGuess[i] = '_';
         }
 
-        if(maxSets.containsKey(String.valueOf(noGuess)) {
-            return maxSets.get(noGuess));
+        if(maxSets.containsKey(String.valueOf(noGuess))) {
+            return maxSets.get(noGuess);
         }
 
         Set<String> keysMaxSets = maxSets.keySet();
         int maxNumChar = 0;
-        Set<String> fewLettersKeys = new Set<String>();
+        String maxSetKey = null;
+        TreeSet<String> fewLettersKeys = new TreeSet<String>();
         for(String oneKey : keysMaxSets) {
             int numChar = 0;
             char[] wordChars = oneKey.toCharArray();
-            for (int i = 0; i < wordChars.length(); i++) {
+            for (int i = 0; i < wordChars.length; i++) {
                 if(wordChars[i] == guess) numChar++;
             }
             if(numChar > maxNumChar) {
                 maxNumChar = numChar;
+                maxSetKey = oneKey;
                 fewLettersKeys.clear();
                 fewLettersKeys.add(oneKey);
             }
@@ -118,14 +124,14 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         }
 
         if(fewLettersKeys.size() == 1) {
-            return maxSets.get(oneKey);
+            return maxSets.get(maxSetKey);
         }
         else if(fewLettersKeys.size() > 1) {
             String rightmostKey = findRightmostGuessedLetter(guess, fewLettersKeys, lengthOfWord - 1);
             return maxSets.get(rightmostKey);
         }
         else {
-            System.out.println('Failure! Fewest guesses in word!');
+            System.out.println("Failure! Fewest guesses in word!");
             return null;
         }
     }
@@ -142,12 +148,12 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 	 * @throws GuessAlreadyMadeException If the character <code>guess</code>
 	 * has already been guessed in this game.
 	 */
-	public Set<String> makeGuess(char guess) throws GuessAlreadyMadeException {
+	public Set<String> makeGuess(char guess) {
         if(!guessesMade.add(guess)) {
             throw new GuessAlreadyMadeException("Guess has already been made: " + String.valueOf(guess));
         }
 
-        Map<String,Set<String>> partitions = new Map<String,Set<String>>;
+        TreeMap<String,TreeSet<String>> partitions = new TreeMap<String,TreeSet<String>>();
 
         for (String word: dictionary) {
             char[] chars = word.toCharArray();
@@ -161,13 +167,13 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             }
             String key = String.valueOf(chars);
             if(partitions.containsKey(key)) {
-                Set<String> partition = partitions.get(key);
+                TreeSet<String> partition = partitions.get(key);
                 partition.add(word);
                 // Do I need to re-put the partition into the map?
                 // I'm assuming not
             }
             else {
-                Set<String> newPartition = new Set<String>();
+                TreeSet<String> newPartition = new TreeSet<String>();
                 newPartition.add(word);
                 partitions.put(key, newPartition);
             }
@@ -175,33 +181,33 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 
         int maxNumWords = 0;
         String curWord = null;
-        Map<String,Set<String>> maxSets = new Map<String,Set<String>>();
-        for(Map.Entry<String,Set<String>> entry : partitions.entrySet()) {
+        TreeMap<String,TreeSet<String>> maxSets = new TreeMap<String,TreeSet<String>>();
+        for(Map.Entry<String,TreeSet<String>> entry : partitions.entrySet()) {
             int setSize = entry.getValue().size();
             if(setSize > maxNumWords) {
                 maxNumWords = setSize;
                 curWord = entry.getKey();
                 maxSets.clear();
-                maxSets.put(entry);
+                maxSets.put(entry.getKey(),entry.getValue());
             }
             else if(setSize == maxNumWords) {
-                maxSets.add(entry)
+                maxSets.put(entry.getKey(),entry.getValue());
             }
         }
 
-        Set<String> newDictionary = new Set<String>();
+        TreeSet<String> newDictionary = new TreeSet<String>();
         if(maxSets.size() == 1) {
-            newDictionary.addAll(maxSets.entrySet().toArray()[0].getValue());
+            newDictionary.addAll(maxSets.get(maxSets.firstKey()));
         }
         else if(maxSets.size() > 1) {
-            newDictionary.addAll(findFewestGuessedLetter(char guess, Map<String,Set<String>> maxSets));
+            newDictionary.addAll(findFewestGuessedLetter(guess, maxSets));
         }
         else {
-            System.out.println('Failure! No Partitions!');
+            System.out.println("Failure! No Partitions!");
         }
         dictionary.clear();
         dictionary.addAll(newDictionary);
-        String oneWord = dictionary.toArray()[0];
+        String oneWord = dictionary.first();
         char[] newWordChars = oneWord.toCharArray();
         int numOfCharGuess = 0;
         for(int i = 0; i < lengthOfWord; i++) {
