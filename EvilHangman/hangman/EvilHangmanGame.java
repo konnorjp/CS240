@@ -99,32 +99,37 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         }
 
         if(maxSets.containsKey(String.valueOf(noGuess))) {
-            return maxSets.get(noGuess);
+            return maxSets.get(String.valueOf(noGuess));
         }
 
         Set<String> keysMaxSets = maxSets.keySet();
-        int maxNumChar = 0;
-        String maxSetKey = null;
+        int minNumChar = lengthOfWord;
+        String minSetKey = null;
         TreeSet<String> fewLettersKeys = new TreeSet<String>();
         for(String oneKey : keysMaxSets) {
+            System.out.println(oneKey);
             int numChar = 0;
             char[] wordChars = oneKey.toCharArray();
             for (int i = 0; i < wordChars.length; i++) {
                 if(wordChars[i] == guess) numChar++;
             }
-            if(numChar > maxNumChar) {
-                maxNumChar = numChar;
-                maxSetKey = oneKey;
+            System.out.println("Key: " + oneKey);
+            System.out.print(numChar);
+            System.out.print(minNumChar);
+            System.out.print('\n');
+            if(numChar < minNumChar) {
+                minNumChar = numChar;
+                minSetKey = oneKey;
                 fewLettersKeys.clear();
                 fewLettersKeys.add(oneKey);
             }
-            else if(numChar == maxNumChar) {
+            else if(numChar == minNumChar) {
                 fewLettersKeys.add(oneKey);
             }
         }
 
         if(fewLettersKeys.size() == 1) {
-            return maxSets.get(maxSetKey);
+            return maxSets.get(minSetKey);
         }
         else if(fewLettersKeys.size() > 1) {
             String rightmostKey = findRightmostGuessedLetter(guess, fewLettersKeys, lengthOfWord - 1);
@@ -214,7 +219,10 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             if(newWordChars[i] == guess) {
                 numOfCharGuess++;
             }
-            if(!guessesMade.contains(newWordChars[i])) {
+            if(guessesMade.contains(newWordChars[i])) {
+                newWordChars[i] = newWordChars[i];
+            }
+            else {
                 newWordChars[i] = '_';
             }
         }
@@ -223,7 +231,8 @@ public class EvilHangmanGame implements IEvilHangmanGame {
             System.out.printf("Sorry, there are no %c's%n", guess);
         }
         else {
-            System.out.printf("There is %d %c",numOfCharGuess, guess);
+            System.out.printf("There is %d %c%n",numOfCharGuess, guess);
+            currentWord = newWord;
         }
         return newDictionary;
     }

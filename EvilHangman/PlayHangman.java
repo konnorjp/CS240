@@ -1,10 +1,11 @@
 
-import java.util.Scanner;
+//import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.Set;
 import java.io.File;
-import hangman.EvilHangmanGame;
-import hangman.EvilHangmanGame.GuessAlreadyMadeException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import hangman.*;
 
 /**
  * A simple main class for running the Evil Hangman Game.
@@ -13,30 +14,39 @@ public class PlayHangman {
     private EvilHangmanGame game = null;
     Set<Character> guesses = new TreeSet<Character>();
     Set<String> possibleWords = new TreeSet<String>();
+    String oldWord = null;
 
     public void guess(int numGuesses) {
         if(numGuesses < 1) {
             System.out.println("You lose!");
             System.out.println("The word was " + game.getRandomWord());
+            return;
         }
-        System.out.println("\nYou have " + numGuesses + " left");
+        System.out.println("\nYou have " + numGuesses + " guesses left");
         System.out.print("Used letters:");
         for (char guess : guesses) {
             System.out.print(" " + guess);
         }
         System.out.print("\nWord: ");
         System.out.println(game.getCurrentWord());
+        oldWord = game.getCurrentWord();
 
         boolean goodGuess = false;
         while(!goodGuess) {
-            System.out.print("\nEnter guess: ");
-            Scanner scan = new Scanner(System.in);
-            String guess = scan.next();
+
+            //BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+
+            java.io.Console cnsl = System.console();
+            System.out.print("Enter guess: ");
+            String guess = cnsl.readLine();
+            //String guess = input.readLine();
+            //Scanner scan = new Scanner(System.in);
+            //String guess = scan.next();
             if(guess.length() > 1) {
                 System.out.println("Invalid input");
                 continue;
             }
-            scan.close();
+            //scan.close();
 
             char[] chars = guess.toCharArray();
             boolean notAlphabetic = false;
@@ -49,27 +59,28 @@ public class PlayHangman {
                 System.out.println("Invalid input");
                 continue;
             }
-
+            guesses.add(guess.charAt(0));
             guess = guess.toLowerCase();
             try {
                 possibleWords = game.makeGuess(guess.charAt(0));
                 goodGuess = true;
             } catch (EvilHangmanGame.GuessAlreadyMadeException e) {
-                System.out.println(e);
+                System.out.println(e.getMessage());
+                continue;
             }
             String currentWord = game.getCurrentWord();
             if(!currentWord.contains("_")) {
                 System.out.println("You win!");
                 return;
             }
+            if(((boolean) guesses.contains(guess.charAt(0)) && oldWord.equals(game.getCurrentWord()))) {
+                oldWord = game.getCurrentWord();
+                guess(numGuesses - 1);
+            }
+            else {
+                guess(numGuesses);
+            }
         }
-        if(goodGuess) {
-            guess(numGuesses);
-        }
-        else {
-            guess(numGuesses - 1);
-        }
-
     }
 
     public void playGame(String dictionaryFileName, int wordLength, int numGuesses) {
