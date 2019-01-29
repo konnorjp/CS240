@@ -42,7 +42,7 @@ public class PlayHangman {
             //String guess = input.readLine();
             //Scanner scan = new Scanner(System.in);
             //String guess = scan.next();
-            if(guess.length() > 1) {
+            if(guess.length() != 1) {
                 System.out.println("Invalid input");
                 continue;
             }
@@ -59,7 +59,8 @@ public class PlayHangman {
                 System.out.println("Invalid input");
                 continue;
             }
-            guesses.add(guess.charAt(0));
+            char character = Character.toLowerCase(guess.charAt(0));
+            guesses.add(character);
             guess = guess.toLowerCase();
             try {
                 possibleWords = game.makeGuess(guess.charAt(0));

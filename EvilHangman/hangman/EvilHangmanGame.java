@@ -107,16 +107,11 @@ public class EvilHangmanGame implements IEvilHangmanGame {
         String minSetKey = null;
         TreeSet<String> fewLettersKeys = new TreeSet<String>();
         for(String oneKey : keysMaxSets) {
-            System.out.println(oneKey);
             int numChar = 0;
             char[] wordChars = oneKey.toCharArray();
             for (int i = 0; i < wordChars.length; i++) {
                 if(wordChars[i] == guess) numChar++;
             }
-            System.out.println("Key: " + oneKey);
-            System.out.print(numChar);
-            System.out.print(minNumChar);
-            System.out.print('\n');
             if(numChar < minNumChar) {
                 minNumChar = numChar;
                 minSetKey = oneKey;
