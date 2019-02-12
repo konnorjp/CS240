@@ -43,32 +43,32 @@ public class EvilHangmanGame implements IEvilHangmanGame {
 	 * @param wordLength Number of characters in the word to guess
 	 */
 	public void startGame(File dictionaryFile, int wordLength) {
-        // Reset entire game, reinitialize everything
-        dictionary = new TreeSet<String>();
-        lengthOfWord = wordLength;
-        char[] curWord = new char[lengthOfWord];
-        for(int i = 0; i < lengthOfWord; i++) {
-            curWord[i] = '_';
-        }
-        currentWord = String.valueOf(curWord);
-        Scanner scanner = null;
+      // Reset entire game, reinitialize everything
+      dictionary = new TreeSet<String>();
+      lengthOfWord = wordLength;
+      char[] curWord = new char[lengthOfWord];
+      for(int i = 0; i < lengthOfWord; i++) {
+          curWord[i] = '_';
+      }
+      currentWord = String.valueOf(curWord);
+      Scanner scanner = null;
 
-		try {
-			scanner = new Scanner(dictionaryFile);
+  		try {
+  			scanner = new Scanner(dictionaryFile);
 
-			while(scanner.hasNext()) {
-				String word = scanner.next();
-                if(wordLength == word.length()) {
-                    dictionary.add(word);
-                }
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} finally {
-			if (scanner != null) {
-				scanner.close();
-			}
-		}
+  			while(scanner.hasNext()) {
+				    String word = scanner.next();
+            if(wordLength == word.length()) {
+                dictionary.add(word);
+            }
+  			}
+  		} catch (IOException ex) {
+  			ex.printStackTrace();
+  		} finally {
+  			if (scanner != null) {
+  				scanner.close();
+  			}
+  		}
 
     }
 

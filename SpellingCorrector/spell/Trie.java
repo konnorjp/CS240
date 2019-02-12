@@ -16,12 +16,12 @@ public class Trie implements ITrie {
         return head;
     }
 
-    /**
-	 * Adds the specified word to the trie (if necessary) and increments the word's frequency count
-	 *
-	 * @param word The word being added to the trie
-	 */
-	public void add(String word) {
+      /**
+  	 * Adds the specified word to the trie (if necessary) and increments the word's frequency count
+  	 *
+  	 * @param word The word being added to the trie
+  	 */
+  	public void add(String word) {
         if (word.length() < 1) return;
         hashValue += word.hashCode();
         wordCount++;
@@ -42,45 +42,45 @@ public class Trie implements ITrie {
         }
     }
 
-	/**
-	 * Searches the trie for the specified word
-	 *
-	 * @param word The word being searched for
-	 *
-	 * @return A reference to the trie node that represents the word,
-	 * 			or null if the word is not in the trie
-	 */
-	public INode find(String word) {
-        Node foundNode = null;
-        Node currentNode = head;
-        char[] wordArray = word.toCharArray();
+  	/**
+  	 * Searches the trie for the specified word
+  	 *
+  	 * @param word The word being searched for
+  	 *
+  	 * @return A reference to the trie node that represents the word,
+  	 * 			or null if the word is not in the trie
+  	 */
+  	public INode find(String word) {
+          Node foundNode = null;
+          Node currentNode = head;
+          char[] wordArray = word.toCharArray();
 
-        for (int i = 0; i < wordArray.length; i++) {
-            if (currentNode.nodes[wordArray[i]-'a'] == null) {
-                return null;
-            }
-            currentNode = currentNode.nodes[wordArray[i]-'a'];
-        }
-        if(currentNode.getValue() < 1) return null;
-        foundNode = currentNode;
-        return foundNode;
-    }
+          for (int i = 0; i < wordArray.length; i++) {
+              if (currentNode.nodes[wordArray[i]-'a'] == null) {
+                  return null;
+              }
+              currentNode = currentNode.nodes[wordArray[i]-'a'];
+          }
+          if(currentNode.getValue() < 1) return null;
+          foundNode = currentNode;
+          return foundNode;
+      }
 
-	/**
-	 * Returns the number of unique words in the trie
-	 *
-	 * @return The number of unique words in the trie
-	 */
-	public int getWordCount() {
+  	/**
+  	 * Returns the number of unique words in the trie
+  	 *
+  	 * @return The number of unique words in the trie
+  	 */
+  	public int getWordCount() {
         return wordCount;
     }
 
-	/**
-	 * Returns the number of nodes in the trie
-	 *
-	 * @return The number of nodes in the trie
-	 */
-	public int getNodeCount() {
+  	/**
+  	 * Returns the number of nodes in the trie
+  	 *
+  	 * @return The number of nodes in the trie
+  	 */
+  	public int getNodeCount() {
         return nodeCount;
     }
 
@@ -126,9 +126,9 @@ public class Trie implements ITrie {
         return sb.toString();
     }
 
-	@Override
-	public int hashCode() {
-        return hashValue * 7;
+  	@Override
+  	public int hashCode() {
+          return hashValue * 7;
     }
 
     private boolean checkNodes(Node node, Node newNode) {
@@ -146,8 +146,8 @@ public class Trie implements ITrie {
         return equals;
     }
 
-	@Override
-	public boolean equals(Object o) {
+  	@Override
+  	public boolean equals(Object o) {
         if (o == null) return false;
         if (this.getClass() != o.getClass()) return false;
 

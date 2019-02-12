@@ -87,7 +87,7 @@ public class PlayHangman {
     public void playGame(String dictionaryFileName, int wordLength, int numGuesses) {
         game = new EvilHangmanGame();
         File file = new File(dictionaryFileName);
-		game.startGame(file, wordLength);
+		    game.startGame(file, wordLength);
         guess(numGuesses);
     }
 
@@ -96,12 +96,12 @@ public class PlayHangman {
 	 * as the second argument.
 	 */
 	public static void main(String[] args) {
-		String dictionaryFileName = args[0];
-		int wordLength = Integer.parseInt(args[1]);
-        int numGuesses = Integer.parseInt(args[2]);
+		  String dictionaryFileName = args[0];
+		  int wordLength = Integer.parseInt(args[1]);
+      int numGuesses = Integer.parseInt(args[2]);
 
-        PlayHangman hangman = new PlayHangman();
-        hangman.playGame(dictionaryFileName, wordLength, numGuesses);
+      PlayHangman hangman = new PlayHangman();
+      hangman.playGame(dictionaryFileName, wordLength, numGuesses);
 	}
 
 }
